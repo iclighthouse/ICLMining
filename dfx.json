@@ -1,0 +1,31 @@
+{
+  "canisters": {
+    "ICLMining": {
+      "main": "src/ICLMining.mo",
+      "type": "motoko",
+      "args" : "--compacting-gc",
+      "gzip" : true
+    },
+    "ICLMiningTest": {
+      "main": "src/ICLMining.mo",
+      "type": "motoko",
+      "args" : "--compacting-gc",
+      "gzip" : true
+    }
+  },
+  "defaults": {
+    "build": {
+      "packtool": "vessel sources"
+    }
+  },
+  "networks": {
+    "ic": {
+      "providers": ["https://ic0.app"],
+      "type": "persistent"
+    },
+    "local": {
+      "bind": "0.0.0.0:8000",
+      "type": "ephemeral"
+    }
+  }
+}
