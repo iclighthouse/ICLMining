@@ -47,8 +47,8 @@ Rewards (ICL) distributed from mining activities are stored in the balance of th
 - ICLMining:  odhfn-cqaaa-aaaar-qaana-cai
 - ICLMining (Test): o7d74-vqaaa-aaaar-qaapa-cai
 
-- Version: 0.1.0
-- Module hash: 12cfc5f0179d4cab61770a3d51eca2b521a35a9488e5905f2e58d9d321cfd587
+- Version: 0.1.1
+- Module hash: 83adb88bd30708f6fdc468f9f05e1da854d46cf17ba44eb9c1decaaa884f0a20
 
 ## Guide
 

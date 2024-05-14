@@ -769,7 +769,9 @@ shared(installMsg) actor class ICLMining() = this {
                                 // point = (newVol.token1 - preVol.token1) / 10**token1.decimals * preMiningDataFactorPercent / 100 * factorVipMaker * (1 + nftAcceRate) * token1PriceUsd 
                                 let point: Nat = _floatToNat(_natToFloat(Nat.sub(vol.value1, preVol.value1) * preMiningDataFactorPercent / 100) / _natToFloat(10 ** pairInfo.token1Decimals) * factorVipMaker * (1 + nftAcceRate) * token1PriceUsd);
                                 _setVol(pairId, accountId, vol);
-                                addPointsForTM := Tools.arrayAppend(addPointsForTM, [(accountId, point)]);
+                                if (point > 0){
+                                    addPointsForTM := Tools.arrayAppend(addPointsForTM, [(accountId, point)]);
+                                };
                             };
                         };
                         let oamms = _getRoundOAMMs(roundId);
@@ -783,7 +785,9 @@ shared(installMsg) actor class ICLMining() = this {
                                 // point = (TWS.shareTimeWeighted - preTWS.shareTimeWeighted) / 10**shareDecimals * nav.token1 / 10**token1.decimals * preMiningDataFactorPercent / 100 * (1 + nftAcceRate) * token1PriceUsd 
                                 let point: Nat = _floatToNat(_natToFloat(Nat.sub(TWS.shareTimeWeighted, preTWS.shareTimeWeighted) * nav.token1 * preMiningDataFactorPercent / 100) / _natToFloat(10 ** shareDecimals) / _natToFloat(10 ** pairInfo.token1Decimals) * (1 + nftAcceRate) * token1PriceUsd);
                                 _setTWShare(oammId, accountId, TWS);
-                                addPointsForLM := Tools.arrayAppend(addPointsForLM, [(accountId, point)]);
+                                if (point > 0){
+                                    addPointsForLM := Tools.arrayAppend(addPointsForLM, [(accountId, point)]);
+                                };
                             };
                         };
                         _updateRoundPoints(roundId, {addPointsForTM = addPointsForTM; addPointsForLM = addPointsForLM});
