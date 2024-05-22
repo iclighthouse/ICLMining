@@ -33,7 +33,7 @@ import Hex "mo:icl/Hex";
 import Tools "mo:icl/Tools";
 import DRC207 "mo:icl/DRC207";
 
-shared(installMsg) actor class ICLMining() = this {
+shared(installMsg) actor class ICLMining(rewardToken: Principal, rewardTokenFee: Nat) = this {
     type Timestamp = Nat; // second
     type PairCanister = Principal;
     type AccountId = Blob;
@@ -97,9 +97,9 @@ shared(installMsg) actor class ICLMining() = this {
     private let aggregator_: Principal = Principal.fromText("i2ied-uqaaa-aaaar-qaaza-cai");
     private let icdexRouter_: Principal = Principal.fromText("i5jcx-ziaaa-aaaar-qaazq-cai");
     private let dexData_: Principal = Principal.fromText("gwhbq-7aaaa-aaaar-qabya-cai");
-    private let icl_: Principal = Principal.fromText("hhaaz-2aaaa-aaaaq-aacla-cai");
-    private let iclFee: Nat = 1000000;
     private let timerInterval: Timestamp = 1800; // seconds
+    private stable var token_: Principal = rewardToken;
+    private stable var tokenFee: Nat = rewardTokenFee;
     private stable var owner: Principal = installMsg.caller;
     private stable var dexPairs : Trie.Trie<PairId, PairInfo> = Trie.empty();
     private stable var dexOAMMs : [(PairId, OammId, ShareDecimals, ICDexMaker.UnitNetValue)] = [];
@@ -220,11 +220,11 @@ shared(installMsg) actor class ICLMining() = this {
         _setBalance(_accountId, available, locked);
     };
     private func _transfer(_to: {owner: Principal; subaccount: ?Blob}, _value: Nat) : async* (){
-        if (_value > iclFee){
-            let token: ICRC1.Self = actor(Principal.toText(icl_));
+        if (_value > tokenFee){
+            let token: ICRC1.Self = actor(Principal.toText(token_));
             let args : ICRC1.TransferArgs = {
                 memo = null;
-                amount = Nat.sub(_value, iclFee);
+                amount = Nat.sub(_value, tokenFee);
                 fee = null;
                 from_subaccount = null;
                 to = _to;
@@ -811,12 +811,12 @@ shared(installMsg) actor class ICLMining() = this {
         let accountId = Tools.principalToAccountBlob(_to.owner, _toSaNat8(_to.subaccount));
         let balance = _getBalance(accountId);
         let value = balance.available;
-        if (value > iclFee){
+        if (value > tokenFee){
             try{
                 _lockBalance(accountId, value);
                 await* _transfer(_to, value);
                 _sublockedBalance(accountId, value);
-                return #Ok(Nat.sub(value, iclFee));
+                return #Ok(Nat.sub(value, tokenFee));
             }catch(e){
                 _unlockBalance(accountId, value);
                 return #Err(Error.message(e));
@@ -831,6 +831,10 @@ shared(installMsg) actor class ICLMining() = this {
     public shared(msg) func changeOwner(_newOwner: Principal): async (){
         assert(_onlyOwner(msg.caller));
         owner := _newOwner;
+    };
+    public shared(msg) func changeToken(_newToken: Principal): async (){
+        assert(_onlyOwner(msg.caller));
+        token_ := _newToken;
     };
     public shared(msg) func newRound(_config: RoundConfig) : async RoundId{
         assert(_onlyOwner(msg.caller));
@@ -897,6 +901,7 @@ shared(installMsg) actor class ICLMining() = this {
             };
         };
     };
+
     // updates
     public shared func claim(_account: {owner: Principal; subaccount: ?Blob}) : async {#Ok: Nat; #Err: Text}{
         return await* _withdraw(_account);
@@ -1126,6 +1131,9 @@ shared(installMsg) actor class ICLMining() = this {
         return _getTWShare(_oammId, _accountId);
     };
     public query func info() : async {
+        rewardToken: Principal;
+        tokenFee: Nat;
+        owner: Principal;
         roundCount: Nat;
         isFetchingPoints: Bool;
         timerId: Nat;
@@ -1134,6 +1142,9 @@ shared(installMsg) actor class ICLMining() = this {
         timerInterval: Timestamp;
     }{
         return {
+            rewardToken = rewardToken;
+            tokenFee = tokenFee;
+            owner = owner;
             roundCount = roundCount;
             isFetchingPoints = isFetchingPoints;
             timerId = timerId;
