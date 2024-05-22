@@ -58,14 +58,14 @@ https://medium.com/@ICLighthouse/icdex-mining-guide-f242a49f2dc9
 
 You (project side of the token of trading pair) need to `clone` the repository from Github, then compile and deploy a standalone canister, with the token cansiter-id and token fee provided as parameters when deploying.
 
-## Dependent toolkits
+### Dependent toolkits
 
-### dfx
+#### dfx
 - https://github.com/dfinity/sdk/
 - version: 0.15.3 (https://github.com/dfinity/sdk/releases/tag/0.15.3)
 - moc version: 0.10.3
 
-### vessel
+#### vessel
 - https://github.com/dfinity/vessel
 - version: 0.7.0 (https://github.com/dfinity/vessel/releases/tag/v0.7.0)
 
@@ -94,4 +94,12 @@ dfx canister --network ic call ICLMining newRound 'record{ \
     preMiningDataFactorPercent = 0 : nat; \
 }'
 ```
+
+Send the sufficient amount of reward tokens to the ICLMining cansiter.
+```
+amount = Total-supply-for-trading-mining-rewards + Total-supply-for-liquidity-mining-rewards + 100000 * token-fee
+```
+
+Notes:
+- Keep track of ICLMining cansiter's Cycles balance and top it up in time.
 
