@@ -83,15 +83,15 @@ dfx canister --network ic install ICLMining --argument '(principal "__your-token
 It is recommended to run a round of mining every week or month.
 
 ```
-dfx canister --network ic call ICLMining newRound 'record{ \
-    pairs = variant {whitelist = vec{ principal "__your-trading-pair-canister-id-1__"; principal "__your-trading-pair-canister-id-2__" }}; \
-    pairFilter = record{minPairScore = 0 : nat; blackList = vec{}}; \
-    content = "__your-description__"; \
-    startTime = 0 : nat; \
-    endTime = __End-time-of-the-round (ts, seconds)__ : nat; \
-    supplyForTM = __Total-supply-for-trading-mining-rewards__ : nat; \
-    supplyForLM = __Total-supply-for-liquidity-mining-rewards__ : nat; \
-    preMiningDataFactorPercent = 0 : nat; \
+dfx canister --network ic call ICLMining newRound 'record{ 
+    pairs = variant {whitelist = vec{ principal "__your-trading-pair-canister-id-1__"; principal "__your-trading-pair-canister-id-2__" }}; 
+    pairFilter = record{minPairScore = 0 : nat; blackList = vec{}}; 
+    content = "__your-description__"; 
+    startTime = 0 : nat; 
+    endTime = __End-time-of-the-round (ts, seconds)__ : nat; 
+    supplyForTM = __Total-supply-for-trading-mining-rewards__ : nat; 
+    supplyForLM = __Total-supply-for-liquidity-mining-rewards__ : nat; 
+    preMiningDataFactorPercent = 0 : nat; 
 }'
 ```
 
